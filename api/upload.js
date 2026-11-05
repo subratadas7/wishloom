@@ -25,12 +25,17 @@ function makeWebRequest(req, body) {
   });
 }
 
+function getOidcToken(req) {
+  const headerToken = req.headers?.['x-vercel-oidc-token'];
+  return (Array.isArray(headerToken) ? headerToken[0] : headerToken) || process.env.VERCEL_OIDC_TOKEN;
+}
+
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     const missing = [];
     if (!process.env.BLOB_STORE_ID) missing.push('BLOB_STORE_ID');
     if (!process.env.BLOB_WEBHOOK_PUBLIC_KEY) missing.push('BLOB_WEBHOOK_PUBLIC_KEY');
-    if (!process.env.VERCEL_OIDC_TOKEN && !process.env.BLOB_READ_WRITE_TOKEN) missing.push('Vercel Blob authentication');
+    if (!getOidcToken(req) && !process.env.BLOB_READ_WRITE_TOKEN) missing.push('Vercel Blob authentication');
     return res.status(200).json({ ready: missing.length === 0, missing });
   }
   try {
@@ -62,6 +67,8 @@ export default async function handler(req, res) {
           allowedContentTypes: [fileType],
           maximumSizeInBytes,
           validUntil,
+          oidcToken: getOidcToken(req),
+          storeId: process.env.BLOB_STORE_ID,
         });
         return {
           token,
