@@ -59,8 +59,7 @@ export default async function handler(req, res) {
         if (!/^(image|audio|video)\/[a-z0-9.+-]+$/.test(fileType)) {
           throw new Error('This file type is not supported.');
         }
-        const contentTypeFamily = `${fileType.split('/', 1)[0]}/*`;
-        const allowedContentTypes = [contentTypeFamily];
+        const allowedContentTypes = [fileType];
         const maximumSizeInBytes = fileType.startsWith('video/') ? 150 * 1024 * 1024 : 100 * 1024 * 1024;
         const validUntil = Math.min(Date.now() + 30 * 60 * 1000, expiresAt);
         const token = await issueSignedToken({
