@@ -33,11 +33,11 @@ Wishloom is hosted on Vercel because share links, media uploads, comments, and a
 
 1. Import the `subratadas7/wishloom` GitHub repository into Vercel.
 2. Set the project preset to **Other** and the root directory to `./`.
-3. In the Vercel project, create a **Private Vercel Blob** store and connect it to Production.
+3. In the Vercel project, create a **Private Vercel Blob** store and connect it to Production. In the store's **Projects** connection, enable the webhook public key. Confirm `BLOB_STORE_ID` and `BLOB_WEBHOOK_PUBLIC_KEY` are available in the Production environment; Vercel manages the OIDC credentials.
 4. In **Settings → Environment Variables**, add `CRON_SECRET` with a random value of at least 16 characters. Keep this value out of GitHub.
 5. Deploy the project. Future commits pushed to the connected branch will trigger a new deployment.
 
-No creator key is needed on the website. Anyone using the public builder can make their own birthday link.
+No creator key is needed on the website. Anyone using the public builder can make their own birthday link. If uploads report that Vercel cannot prepare a presigned URL, open the Blob store's **Projects** tab, select the ⋯ menu for Wishloom, choose **Update Project Connection**, and enable the webhook public key. Then redeploy so the Production function receives `BLOB_WEBHOOK_PUBLIC_KEY`.
 
 ---
 

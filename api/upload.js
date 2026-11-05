@@ -26,6 +26,13 @@ function makeWebRequest(req, body) {
 }
 
 export default async function handler(req, res) {
+  if (req.method === 'GET') {
+    const missing = [];
+    if (!process.env.BLOB_STORE_ID) missing.push('BLOB_STORE_ID');
+    if (!process.env.BLOB_WEBHOOK_PUBLIC_KEY) missing.push('BLOB_WEBHOOK_PUBLIC_KEY');
+    if (!process.env.VERCEL_OIDC_TOKEN && !process.env.BLOB_READ_WRITE_TOKEN) missing.push('Vercel Blob authentication');
+    return res.status(200).json({ ready: missing.length === 0, missing });
+  }
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const request = makeWebRequest(req, body);
