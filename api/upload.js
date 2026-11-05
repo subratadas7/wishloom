@@ -9,14 +9,9 @@ function isUnexpiredGiftId(id) {
 export default async function handler(req, res) {
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const request = new Request(`https://${req.headers.host || 'localhost'}${req.url || '/api/upload'}`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body || {}),
-    });
     const response = await handleUpload({
       body,
-      request,
+      request: req,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
         let payload;
         try {
@@ -41,6 +36,7 @@ export default async function handler(req, res) {
     });
     res.status(response.status).json(await response.json());
   } catch (error) {
+    console.error('Wishloom upload token failed:', error?.message || error);
     res.status(400).json({ error: error?.message || 'Upload could not be started.' });
   }
 }
