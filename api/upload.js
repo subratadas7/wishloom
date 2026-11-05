@@ -1,42 +1,78 @@
-import { handleUpload } from '@vercel/blob/client';
+import { issueSignedToken } from '@vercel/blob';
+import { handleUploadPresigned } from '@vercel/blob/client';
 
-function isUnexpiredGiftId(id) {
-  if (!/^[a-f0-9]{24}$/.test(id || '')) return false;
-  const createdAt = Number.parseInt(id.slice(0, 8), 16) * 1000;
-  return Number.isFinite(createdAt) && Date.now() < createdAt + 24 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function giftExpiry(id) {
+  if (!/^[a-f0-9]{24}$/.test(id || '')) return 0;
+  return Number.parseInt(id.slice(0, 8), 16) * 1000 + DAY_MS;
+}
+
+function makeWebRequest(req, body) {
+  const headers = new Headers();
+  for (const [name, value] of Object.entries(req.headers || {})) {
+    if (typeof value === 'string' && !['content-length', 'transfer-encoding', 'connection'].includes(name.toLowerCase())) {
+      headers.set(name, value);
+    }
+  }
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost';
+  const protocol = req.headers['x-forwarded-proto'] || 'https';
+  const method = req.method || 'POST';
+  return new Request(`${protocol}://${host}${req.url || '/api/upload'}`, {
+    method,
+    headers,
+    body: method === 'GET' || method === 'HEAD' ? undefined : JSON.stringify(body || {}),
+  });
 }
 
 export default async function handler(req, res) {
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const response = await handleUpload({
-      body,
-      request: req,
-      onBeforeGenerateToken: async (pathname, clientPayload) => {
+    const request = makeWebRequest(req, body);
+    const result = await handleUploadPresigned({
+      body: body || {},
+      request,
+      getSignedToken: async (pathname, clientPayload) => {
         let payload;
         try {
           payload = typeof clientPayload === 'string' ? JSON.parse(clientPayload) : clientPayload;
         } catch {
           throw new Error('Invalid upload request.');
         }
-        if (!isUnexpiredGiftId(payload?.giftId) || !pathname.startsWith(`wishloom/media/${payload.giftId}/`)) {
+        const expiresAt = giftExpiry(payload?.giftId);
+        if (!expiresAt || Date.now() >= expiresAt || !pathname.startsWith(`wishloom/media/${payload.giftId}/`)) {
           throw new Error('This birthday upload session has expired. Start a new birthday link.');
         }
         const fileType = payload?.fileType;
         if (typeof fileType !== 'string' || !/^(image|audio|video)\/[a-z0-9.+-]+$/i.test(fileType)) {
           throw new Error('This file type is not supported.');
         }
-        return {
+        const maximumSizeInBytes = fileType.startsWith('video/') ? 150 * 1024 * 1024 : 30 * 1024 * 1024;
+        const validUntil = Math.min(Date.now() + 10 * 60 * 1000, expiresAt);
+        const token = await issueSignedToken({
+          pathname,
+          operations: ['put'],
           allowedContentTypes: [fileType],
-          addRandomSuffix: true,
-          tokenPayload: JSON.stringify({ kind: fileType.split('/')[0], giftId: payload.giftId }),
+          maximumSizeInBytes,
+          validUntil,
+        });
+        return {
+          token,
+          urlOptions: {
+            allowedContentTypes: [fileType],
+            maximumSizeInBytes,
+            validUntil,
+            addRandomSuffix: true,
+            allowOverwrite: false,
+            cacheControlMaxAge: 60,
+          },
         };
       },
       onUploadCompleted: async () => {},
     });
-    res.status(response.status).json(await response.json());
+    res.status(200).json(result);
   } catch (error) {
-    console.error('Wishloom upload token failed:', error?.message || error);
-    res.status(400).json({ error: error?.message || 'Upload could not be started.' });
+    console.error('Wishloom presigned upload failed:', error?.message || error);
+    res.status(400).json({ error: error?.message || 'Could not prepare a secure upload.' });
   }
 }
