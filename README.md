@@ -13,7 +13,7 @@ Wishloom turns a birthday into a personalized, chapter-by-chapter story. Create 
 - 🎨 Seven themes: Pastel Garden, Disco After-Dark, Moonlit Constellation, Aurora Dream, Candy Carnival, Ocean Daydream, and Golden Birthday
 - 🎂 Eight cake styles and five candle styles
 - 🖼️ Photo slideshow with eight animated memory cards
-- 🎵 Birthday soundtrack upload
+- 🎵 Fixed looping birthday soundtrack through the candle wish, plus a personal finale song
 - 🎥 Personal video message upload or live recording
 - 🎙️ Voice message upload or recording
 - 🎤 Blow out candles using the microphone or tap each flame
