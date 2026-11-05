@@ -55,8 +55,8 @@ export default async function handler(req, res) {
         if (!expiresAt || Date.now() >= expiresAt || !pathname.startsWith(`wishloom/media/${payload.giftId}/`)) {
           throw new Error('This birthday upload session has expired. Start a new birthday link.');
         }
-        const fileType = payload?.fileType;
-        if (typeof fileType !== 'string' || !/^(image|audio|video)\/[a-z0-9.+-]+$/i.test(fileType)) {
+        const fileType = typeof payload?.fileType === 'string' ? payload.fileType.split(';', 1)[0].trim().toLowerCase() : '';
+        if (!/^(image|audio|video)\/[a-z0-9.+-]+$/.test(fileType)) {
           throw new Error('This file type is not supported.');
         }
         const maximumSizeInBytes = fileType.startsWith('video/') ? 150 * 1024 * 1024 : 30 * 1024 * 1024;
