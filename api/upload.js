@@ -61,8 +61,8 @@ export default async function handler(req, res) {
         }
         const contentTypeFamily = `${fileType.split('/', 1)[0]}/*`;
         const allowedContentTypes = [contentTypeFamily];
-        const maximumSizeInBytes = fileType.startsWith('video/') ? 150 * 1024 * 1024 : 30 * 1024 * 1024;
-        const validUntil = Math.min(Date.now() + 10 * 60 * 1000, expiresAt);
+        const maximumSizeInBytes = fileType.startsWith('video/') ? 150 * 1024 * 1024 : 100 * 1024 * 1024;
+        const validUntil = Math.min(Date.now() + 30 * 60 * 1000, expiresAt);
         const token = await issueSignedToken({
           pathname,
           operations: ['put'],
