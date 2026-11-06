@@ -62,9 +62,13 @@ export default async function handler(req, res) {
         // Browsers and messaging apps commonly label audio-only WebM voice
         // notes as video/webm. Permit both WebM labels for the same upload
         // so the blob client and signed token agree on the container type.
-        const allowedContentTypes = fileType === 'audio/webm' || fileType === 'video/webm'
-          ? ['audio/webm', 'video/webm']
-          : [fileType];
+        // Video MIME families are accepted as a wildcard to cover WebM labels
+        // emitted by mobile browsers and recorded clips.
+        const allowedContentTypes = fileType.startsWith('video/')
+          ? ['video/*']
+          : fileType === 'audio/webm'
+            ? ['audio/webm', 'video/webm']
+            : [fileType];
         const maximumSizeInBytes = fileType.startsWith('video/') ? 150 * 1024 * 1024 : 100 * 1024 * 1024;
         const validUntil = Math.min(Date.now() + 30 * 60 * 1000, expiresAt);
         const token = await issueSignedToken({

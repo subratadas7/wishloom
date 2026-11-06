@@ -13,6 +13,7 @@ export default async function handler(req, res) {
   }
 
   const query = String(req.query?.q || '').trim().slice(0, 100);
+  const pageToken = String(req.query?.pageToken || '').slice(0, 512);
   if (query.length < 2) return res.status(400).json({ error: 'Enter at least two characters to search.' });
 
   const apiKey = process.env.YOUTUBE_API_KEY;
@@ -29,6 +30,7 @@ export default async function handler(req, res) {
       safeSearch: 'moderate',
       key: apiKey,
     });
+    if (pageToken) params.set('pageToken', pageToken);
     const response = await fetch(`${API_URL}?${params}`);
     const payload = await response.json();
     if (!response.ok) {
@@ -60,7 +62,7 @@ export default async function handler(req, res) {
       }];
     });
     res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=600');
-    return res.status(200).json({ results });
+    return res.status(200).json({ results, nextPageToken: payload.nextPageToken || null });
   } catch (error) {
     console.error('YouTube song search request failed:', error?.message || error);
     return res.status(502).json({ error: 'Song search is temporarily unavailable. Try again in a moment.' });
