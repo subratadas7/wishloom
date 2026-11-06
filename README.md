@@ -7,7 +7,7 @@
 Create a multi-chapter birthday surprise with personal photos, messages, music, candles, and celebratory effects—then share one private link with the birthday person.
 
 [![Live on Vercel](https://img.shields.io/badge/Live%20on-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)](https://wishloom-me.vercel.app/)
-[![GitHub repository](https://img.shields.io/badge/GitHub-subratadas7%2Fwishloom-181717?style=for-the-badge&logo=github)](https://github.com/subratadas7/wishloom)
+[![GitHub repository](https://img.shields.io/badge/GitHub-subratadas7%2Fwishvilo-181717?style=for-the-badge&logo=github)](https://github.com/subratadas7/wishvilo)
 [![MIT License](https://img.shields.io/badge/License-MIT-8b6bd6?style=for-the-badge)](LICENSE)
 [![HTML](https://img.shields.io/badge/HTML5-Story%20UI-e34f26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
 [![CSS](https://img.shields.io/badge/CSS3-Responsive%20Design-1572b6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
@@ -110,8 +110,8 @@ The project has no build command. To run its Vercel API routes locally:
 2. Clone the repository and install dependencies:
 
    ```bash
-   git clone https://github.com/subratadas7/wishloom.git
-   cd wishloom
+   git clone https://github.com/subratadas7/wishvilo.git
+   cd wishvilo
    npm install
    ```
 
@@ -132,7 +132,7 @@ A local static file server can display the front end, but sharing, private uploa
 
 ## ☁️ Deploy to Vercel
 
-1. Import [the GitHub repository](https://github.com/subratadas7/wishloom) into Vercel and use the **Other** framework preset with the repository root as the project directory.
+1. Import [the GitHub repository](https://github.com/subratadas7/wishvilo) into Vercel and use the **Other** framework preset with the repository root as the project directory.
 2. Create a **Private** Vercel Blob store and connect it to the project. Make sure the connection is enabled for **Production** and its webhook public key is enabled.
 3. Confirm the production project receives `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY`, and Vercel Blob authentication. Vercel’s project connection supplies these values; do not paste a Blob token into the public source code.
 4. Add `CRON_SECRET` as a private Vercel environment variable so the scheduled cleanup endpoint is protected.
@@ -159,7 +159,7 @@ A local static file server can display the front end, but sharing, private uploa
 ## 📁 Project structure
 
 ```text
-wishloom/
+wishvilo/
 ├── api/
 │   ├── cleanup.js        # Scheduled deletion of expired private files
 │   ├── comments.js       # Read and post recipient comments
