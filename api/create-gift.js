@@ -19,7 +19,8 @@ export default async function handler(req, res) {
     await put(`wishloom/gifts/${id}.html`, html, {
       access: 'private',
       addRandomSuffix: false,
-      allowOverwrite: false,
+      // Retrying a failed link creation reuses the same draft ID and refreshes its page.
+      allowOverwrite: true,
       contentType: 'text/html; charset=utf-8',
       cacheControlMaxAge: 0,
     });
