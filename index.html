@@ -117,6 +117,11 @@ body[data-theme="carnival"] .wish-reply{color:#9b245f}
 body[data-theme="ocean"] .wish-reply{color:#07536b}
 body[data-theme="gold"] .wish-reply{color:#76501d}
 body[data-theme="disco"] .hint,body[data-theme="midnight"] .hint,body[data-theme="aurora"] .hint{color:#ead9ed!important}
+
+/* Keep the recipient preview navigable without scrolling to the end of a long scene. */
+body[data-gift-mode="true"] .progress-label{display:none}
+body[data-gift-mode="true"] .nav{position:sticky;bottom:0;z-index:35;margin:22px auto 0;padding:14px 10px max(14px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent 0%,rgba(255,247,239,.88) 42%);backdrop-filter:blur(8px)}
+body[data-gift-mode="true"][data-theme="disco"] .nav,body[data-gift-mode="true"][data-theme="midnight"] .nav,body[data-gift-mode="true"][data-theme="aurora"] .nav{background:linear-gradient(180deg,transparent 0%,rgba(20,16,39,.88) 42%)}
 </style></head>
 <body>
 <div class="body-spice" aria-hidden="true"></div><div class="theme-objects" id="themeObjects" aria-hidden="true"></div><div class="top"><b>✦</b> WISHLOOM · A BIRTHDAY STORY, MADE JUST FOR YOU <b>✦</b></div><div class="birthday-garland" aria-label="Happy Birthday bunting"><span class="banner-balloon left">🎈</span><span class="flag">H</span><span class="flag">A</span><span class="flag">P</span><span class="flag">P</span><span class="flag">Y</span><span class="flag">B</span><span class="flag">I</span><span class="flag">R</span><span class="flag">T</span><span class="flag">H</span><span class="flag">D</span><span class="flag">A</span><span class="flag">Y</span><span class="banner-balloon right">🎈</span></div><div class="balloon ba" aria-hidden="true"></div><div class="balloon bb" aria-hidden="true"></div>
