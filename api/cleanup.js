@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       const expired = page.blobs.filter(blob => {
         const id = giftIdFromPath(blob.pathname);
         if (!id) return false;
-        const expiresAt = Number.parseInt(id.slice(0, 8), 16) * 1000 + 24 * 60 * 60 * 1000;
+        const expiresAt = Number.parseInt(id.slice(0, 8), 16) * 1000 + 12 * 60 * 60 * 1000;
         return Date.now() >= expiresAt;
       });
       for (let i = 0; i < expired.length; i += 100) {

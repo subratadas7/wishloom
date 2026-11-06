@@ -1,11 +1,11 @@
 import { issueSignedToken } from '@vercel/blob';
 import { handleUploadPresigned } from '@vercel/blob/client';
 
-const DAY_MS = 24 * 60 * 60 * 1000;
+const LINK_TTL_MS = 12 * 60 * 60 * 1000;
 
 function giftExpiry(id) {
   if (!/^[a-f0-9]{24}$/.test(id || '')) return 0;
-  return Number.parseInt(id.slice(0, 8), 16) * 1000 + DAY_MS;
+  return Number.parseInt(id.slice(0, 8), 16) * 1000 + LINK_TTL_MS;
 }
 
 function makeWebRequest(req, body) {

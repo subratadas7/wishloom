@@ -1,10 +1,10 @@
 import { issueSignedToken, presignUrl } from '@vercel/blob';
 
-const DAY_MS = 24 * 60 * 60 * 1000;
+const LINK_TTL_MS = 12 * 60 * 60 * 1000;
 
 function giftExpiry(id) {
   if (!/^[a-f0-9]{24}$/.test(id || '')) return 0;
-  return Number.parseInt(id.slice(0, 8), 16) * 1000 + DAY_MS;
+  return Number.parseInt(id.slice(0, 8), 16) * 1000 + LINK_TTL_MS;
 }
 
 export default async function handler(req, res) {
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   }
   const expiresAt = giftExpiry(id);
   if (!expiresAt || Date.now() >= expiresAt) {
-    return res.status(410).send('This birthday surprise has vanished after 24 hours.');
+    return res.status(410).send('This birthday surprise has vanished after 12 hours.');
   }
   try {
     const token = await issueSignedToken({ pathname, operations: ['get'], validUntil: expiresAt });

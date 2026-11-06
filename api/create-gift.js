@@ -2,7 +2,7 @@ import { put } from '@vercel/blob';
 
 function expirationFor(id) {
   if (!/^[a-f0-9]{24}$/.test(id || '')) return 0;
-  return Number.parseInt(id.slice(0, 8), 16) * 1000 + 24 * 60 * 60 * 1000;
+  return Number.parseInt(id.slice(0, 8), 16) * 1000 + 12 * 60 * 60 * 1000;
 }
 
 export default async function handler(req, res) {

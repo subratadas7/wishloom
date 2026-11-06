@@ -1,12 +1,12 @@
 import { get } from '@vercel/blob';
 
 function isExpired(id) {
-  return !/^[a-f0-9]{24}$/.test(id || '') || Date.now() >= Number.parseInt(id.slice(0, 8), 16) * 1000 + 24 * 60 * 60 * 1000;
+  return !/^[a-f0-9]{24}$/.test(id || '') || Date.now() >= Number.parseInt(id.slice(0, 8), 16) * 1000 + 12 * 60 * 60 * 1000;
 }
 
 export default async function handler(req, res) {
   const id = req.query?.id || new URL(req.url || '/', `https://${req.headers.host || 'localhost'}`).searchParams.get('id') || '';
-  if (isExpired(id)) return res.status(410).send('This birthday surprise has vanished after 24 hours.');
+  if (isExpired(id)) return res.status(410).send('This birthday surprise has vanished after 12 hours.');
   try {
     const result = await get(`wishloom/gifts/${id}.html`, { access: 'private' });
     if (!result?.stream || result.statusCode !== 200) return res.status(404).send('This birthday page could not be found.');

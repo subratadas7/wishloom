@@ -38,7 +38,7 @@ Wishloom guides a creator through a seven-scene birthday experience. The creator
 ### 🔗 Share and leave a note
 
 - Create a unique recipient link and copy it or open WhatsApp to share it.
-- Birthday pages, uploaded media, and comments expire after 24 hours.
+- Birthday pages, uploaded media, and comments expire after 12 hours.
 - Recipients can leave a comment on the birthday page.
 
 > **Audio note:** Browsers may require a tap before they allow audio playback. Wishloom starts music in response to the recipient’s on-page actions. The final song starts when they press **Reveal my surprise**.
@@ -90,7 +90,7 @@ Install the Vercel CLI, link the repository to your Vercel project, and run `ver
 
 ## ⏳ Expiry details
 
-A birthday link and its media are refused after 24 hours. The scheduled cleanup removes expired Blob files on its next run; on Vercel Hobby, cleanup runs daily at **00:20 UTC**. Therefore, stored files may remain until that cleanup runs, even though the expired link no longer opens. Copies that someone already downloaded or saved cannot be removed remotely.
+A birthday link and its media are refused after 12 hours. The scheduled cleanup removes expired Blob files on its next run; on Vercel Hobby, cleanup runs daily at **00:20 UTC**. Therefore, stored files may remain until that cleanup runs, even though access has already ended. Because cleanup runs once daily, stored files can remain until the next cleanup run. Copies that someone already downloaded or saved cannot be removed remotely.
 
 ---
 

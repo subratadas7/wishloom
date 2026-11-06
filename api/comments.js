@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { get, list, put } from '@vercel/blob';
 
 function isValidGiftId(id) {
-  return /^[a-f0-9]{24}$/.test(id || '') && Date.now() < Number.parseInt(id.slice(0, 8), 16) * 1000 + 24 * 60 * 60 * 1000;
+  return /^[a-f0-9]{24}$/.test(id || '') && Date.now() < Number.parseInt(id.slice(0, 8), 16) * 1000 + 12 * 60 * 60 * 1000;
 }
 
 function requestId(req) {
