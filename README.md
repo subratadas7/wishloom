@@ -1,140 +1,199 @@
+<div align="center">
+
 # 🎂 Wishloom
 
-A birthday surprise told as a little interactive story. Personalize the recipient’s page, add memories and messages, then share one private link.
+### A birthday story, made just for someone special.
 
-[![Open Wishloom](https://img.shields.io/badge/Hosted%20on-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)](https://wishloom-me.vercel.app/)
-![Made with HTML, CSS, and JavaScript](https://img.shields.io/badge/Made%20with-HTML%20%7C%20CSS%20%7C%20JavaScript-f36f91?style=for-the-badge&logo=html5&logoColor=white)
-[![MIT License](https://img.shields.io/badge/License-MIT-9b78c8?style=for-the-badge)](LICENSE)
+Create a multi-chapter birthday surprise with personal photos, messages, music, candles, and celebratory effects—then share one private link with the birthday person.
 
-**Live site:** [wishloom-me.vercel.app](https://wishloom-me.vercel.app/) · **Repository:** [subratadas7/wishloom](https://github.com/subratadas7/wishloom)
+[![Live on Vercel](https://img.shields.io/badge/Live%20on-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)](https://wishloom-me.vercel.app/)
+[![GitHub repository](https://img.shields.io/badge/GitHub-subratadas7%2Fwishloom-181717?style=for-the-badge&logo=github)](https://github.com/subratadas7/wishloom)
+[![MIT License](https://img.shields.io/badge/License-MIT-8b6bd6?style=for-the-badge)](LICENSE)
+[![HTML](https://img.shields.io/badge/HTML5-Story%20UI-e34f26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
+[![CSS](https://img.shields.io/badge/CSS3-Responsive%20Design-1572b6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-f7df1e?style=for-the-badge&logo=javascript&logoColor=111)](https://developer.mozilla.org/docs/Web/JavaScript)
 
----
+[Open Wishloom](https://wishloom-me.vercel.app/) · [Features](#-features) · [Run locally](#-run-locally) · [Deploy](#-deploy-to-vercel)
 
-## ✨ What it does
-
-Wishloom guides a creator through a seven-scene birthday experience. The creator edits the recipient’s name and message, chooses a visual style, adds media, previews the recipient view, and creates a link to share. The recipient sees the finished story without the editing controls.
-
-### 🎨 Personalize the story
-
-- Add the recipient’s name, an opening message, a heartfelt note, and a final birthday wish.
-- Choose from seven visual themes, seven animation styles, eight cake designs, and five candle styles.
-- Set the number of candles and the recipient’s age for the birthday effects.
-- Preview the finished recipient experience before creating a share link.
-
-### 📸 Add memories and messages
-
-- Upload multiple photos, crop and reposition each one, and view them in a slideshow and memory cards.
-- Add a photo to the center of the chapter-three vinyl record.
-- Add a personal video by uploading a clip or recording with the device camera.
-- Add a voice message by uploading audio or recording with the device microphone.
-
-### 🎂 Make a birthday wish
-
-- A built-in soundtrack loops from the opening until the candle wish.
-- The recipient can blow out candles with the microphone or tap the flames.
-- When the candles go out, the page plays the birthday celebration effects, including the age-based balloon pop.
-- Preview and trim the final song before sharing. The chosen start and end points apply to the default song, a personal upload, or a selected YouTube track.
-- The final surprise plays the included default song unless the creator selects a YouTube song or uploads a personal song.
-
-### 🔗 Share and leave a note
-
-- Create a unique recipient link and copy it or open WhatsApp to share it.
-- Birthday pages, uploaded media, and comments expire after 12 hours.
-- Recipients can leave a comment on the birthday page.
-
-> **Audio note:** Browsers may require a tap before they allow audio playback. Wishloom starts music in response to the recipient’s on-page actions. The final song starts when they press **Reveal my surprise**.
+</div>
 
 ---
+
+## 💌 About
+
+Wishloom is a responsive birthday-wish website that turns a greeting into a guided story. A creator personalizes the experience, checks the recipient view, and creates a shareable link. The recipient gets the finished story without the creator’s editing controls.
+
+The experience opens with an invitation, then guides the recipient through seven chapters. Chapter 4 is omitted from the shared story when neither a personal video nor a voice message was added.
+
+## ✨ Features
+
+### Personalize the celebration
+
+- The birthday person’s name is required before the story can start.
+- Add an opening line, a heartfelt note, and a final birthday wish.
+- Choose from 7 birthday designs, 7 animation styles, 9 cake designs, and 5 candle styles; these choices start unselected.
+- Pick a candle count and recipient age for the candle and balloon effects.
+- Preview the finished recipient experience before creating the share link.
+- The creator’s Wishloom credit and social profile links stay in the footer.
+
+### Build a photo story
+
+- Add **4 to 8 photos**. Four are required to continue; eight is the maximum.
+- Adjust each photo’s crop, position, and zoom.
+- Replace or remove photos from their visible memory cards.
+- Browse the photo slideshow and reveal matching memory cards in the recipient story.
+
+### Add sound and personal messages
+
+- A built-in birthday soundtrack plays from the opening and loops until the candles are extinguished.
+- Add an optional photo to the center of the chapter-three vinyl record; its design rotates with the soundtrack.
+- Add a short personal video or voice message by uploading a file or recording with the device camera or microphone.
+- The birthday-video chapter includes a default video. The creator can replace it with a personal clip and adjust its crop; the recipient opens it by tapping the gift.
+- The final surprise uses the built-in song by default. The creator can search YouTube or upload a personal song instead, preview it, and choose the section to play.
+- The final song plays only during the final surprise. Leaving that chapter stops playback.
+
+### Make a wish
+
+- The recipient can blow into the microphone or tap the candle flames to extinguish them.
+- The birthday message uses the recipient’s name.
+- When the candles go out, Wishloom launches birthday effects, including balloon pops based on the age and an optional fireworks finale.
+
+### Share privately
+
+- Create a unique birthday link, copy it, or share it through WhatsApp.
+- Recipients can leave a name and comment on the birthday page.
+- Birthday pages, media, and comments become inaccessible after **12 hours**.
+- A scheduled cleanup checks for expired files every **15 minutes** and removes them from the connected private Vercel Blob store.
+
+> **Browser audio note:** Browsers may block automatic audio until someone interacts with the page. Wishloom starts music in response to the recipient’s actions; the final song begins when they open the final surprise.
+
+## 📖 The invitation and seven chapters
+
+| Section | What happens |
+|---|---|
+| Opening · The Invitation | Recipient greeting, design, animation, cake, candle, and celebration settings. |
+| Chapter 1 · A Little Time Capsule | Photo slideshow and matching memory cards. |
+| Chapter 2 · A Note from the Heart | Personal message. |
+| Chapter 3 · Set the Soundtrack | Fixed opening birthday soundtrack and optional photo in the center of the vinyl record. |
+| Chapter 4 · A Message Just for You | Optional personal video or voice message; omitted from the shared story if neither is supplied. |
+| Chapter 5 · A Little Surprise | Gift-box reveal followed by the default or replaced birthday video. |
+| Chapter 6 · Make a Wish | Candle-blowing, personalized birthday message, balloons, and optional fireworks. |
+| Chapter 7 · The Big Finale | Reveal the final wish with the default, uploaded, or selected YouTube song. |
+
+## 🧰 Technology
+
+| Area | Technology |
+|---|---|
+| Front end | HTML, CSS, and vanilla JavaScript |
+| Hosting and API routes | Vercel Functions |
+| Private media and birthday pages | Vercel Blob (`@vercel/blob`) |
+| Direct media uploads | Vercel Blob client and signed upload tokens |
+| Song search | YouTube Data API v3; selected songs use YouTube’s embedded player |
+| Camera and microphone | Browser MediaDevices and MediaRecorder APIs |
+| Expiry cleanup | Vercel Cron schedule |
+
+There is no front-end build step. The main interface and recipient experience are in `index.html`; server-side features are implemented in `/api`.
 
 ## 🚀 Use the live site
 
-1. Open [Wishloom](https://wishloom-me.vercel.app/).
-2. Enter the recipient’s name and personalize the messages, theme, cake, candles, and effects.
-3. Move through the scenes to add photos, soundtrack artwork, a video, or a voice message. These uploads are optional.
-4. In the final scene, preview the default song, select a YouTube song, or upload a personal song. Adjust the start and end points to choose the section that plays during the final surprise.
-5. Select **Create birthday link**, then copy the link or share it with WhatsApp.
+1. Open [wishloom-me.vercel.app](https://wishloom-me.vercel.app/).
+2. Enter the birthday person’s name and choose a design, animation, cake, and candle.
+3. Add 4–8 photos and personalize the story. Add video, voice, and a final song if desired.
+4. Use the final-step recipient preview to review the story before sharing.
+5. Create the birthday link, copy it, or share it through WhatsApp.
 
-The recipient link is read-only: it shows the completed birthday story, without the creator’s upload and editing controls.
+## 🛠️ Run locally
 
----
+The project has no build command. To run its Vercel API routes locally:
 
-## 🧰 Built with
+1. Install Node.js and the Vercel CLI.
+2. Clone the repository and install dependencies:
 
-| Part | Technology |
-|---|---|
-| Page, design, and interactions | HTML, CSS, and vanilla JavaScript |
-| Camera and voice recording | Browser MediaRecorder and MediaDevices APIs |
-| Photo editing | Browser image and canvas APIs |
-| Secure media and birthday-page storage | Vercel Functions and Private Vercel Blob |
-| Final song search | Official YouTube Data API search and YouTube embedded player |
-| Expiry cleanup | Vercel Schedules |
-| Blob client | `@vercel/blob` 2.8.2 |
+   ```bash
+   git clone https://github.com/subratadas7/wishloom.git
+   cd wishloom
+   npm install
+   ```
 
-The site has no frontend build step. The main experience lives in `index.html`; the `/api` routes provide the sharing and storage features.
+3. Link the project to your Vercel account and pull its development settings:
 
----
+   ```bash
+   vercel link
+   vercel env pull .env.local
+   ```
 
-## 🛠️ Deploy your own copy
+4. Start the local Vercel environment:
 
-1. Import [this GitHub repository](https://github.com/subratadas7/wishloom) into Vercel.
-2. Use the **Other** framework preset and `./` as the project root directory.
-3. Create a **Private Vercel Blob** store and connect it to the project’s **Production** environment. In the Blob store’s project connection, enable the webhook public key. Confirm that `BLOB_STORE_ID` and `BLOB_WEBHOOK_PUBLIC_KEY` are available to the Production deployment; Vercel provides the deployment authentication.
-4. Add a `CRON_SECRET` environment variable with a long, randomly generated value. Keep it private.
-5. To enable final-song search, enable **YouTube Data API v3** in Google Cloud, create an API key restricted to this API, and add it in Vercel as `YOUTUBE_API_KEY`. Keep the key out of source files. Uploaded songs work without this key.
-6. Deploy. Future pushes to the connected branch will trigger deployments automatically.
+   ```bash
+   vercel dev
+   ```
 
-If the page reports that a Blob upload cannot be prepared, check the Private Blob store’s project connection and webhook public key, then redeploy. The public birthday builder does not require a creator API key.
+A local static file server can display the front end, but sharing, private uploads, comments, YouTube search, and expiry cleanup require the Vercel API routes and their configured services.
 
-### Local development
+## ☁️ Deploy to Vercel
 
-Install the Vercel CLI, link the repository to your Vercel project, and run `vercel dev`. The sharing, uploads, comments, and expiry behavior need a working Vercel Blob connection; opening `index.html` directly only provides a static page and cannot run the API routes.
+1. Import [the GitHub repository](https://github.com/subratadas7/wishloom) into Vercel and use the **Other** framework preset with the repository root as the project directory.
+2. Create a **Private** Vercel Blob store and connect it to the project. Make sure the connection is enabled for **Production** and its webhook public key is enabled.
+3. Confirm the production project receives `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY`, and Vercel Blob authentication. Vercel’s project connection supplies these values; do not paste a Blob token into the public source code.
+4. Add `CRON_SECRET` as a private Vercel environment variable so the scheduled cleanup endpoint is protected.
+5. To enable YouTube song search, enable **YouTube Data API v3** in Google Cloud, create and restrict an API key, then add it to Vercel as `YOUTUBE_API_KEY`. Song uploads do not require this key.
+6. Deploy. Later pushes to the connected GitHub branch trigger new Vercel deployments.
 
----
+### Environment variables
 
-## ⏳ Expiry details
+| Variable | Required for | Where it comes from |
+|---|---|---|
+| `BLOB_STORE_ID` | Private Blob uploads and storage | Vercel Blob project connection |
+| `BLOB_WEBHOOK_PUBLIC_KEY` | Signed Blob uploads | Vercel Blob project connection with its webhook public key enabled |
+| Vercel Blob authentication | Private Blob operations | Vercel project connection / deployment environment |
+| `CRON_SECRET` | Protecting scheduled expiry cleanup | Generate a long random secret and add it in Vercel |
+| `YOUTUBE_API_KEY` | Searching songs on YouTube | Google Cloud API key for YouTube Data API v3 |
 
-Final-song search uses the YouTube Data API and plays selected videos in YouTube’s embedded player; song uploads play in the page audio player. Creators can preview and trim the selected song, and the recipient hears only the chosen segment. Search requires a `YOUTUBE_API_KEY` in Vercel.
+## ⏳ Expiry and upload limits
 
-A birthday link and its media are refused after 12 hours. A scheduled cleanup checks for expired pages, photos, videos, audio, and comments every 15 minutes and deletes them from the connected Private Blob store. Vercel may delay scheduled runs by up to 15 minutes, and deletion can take up to 60 seconds to propagate, so physical removal can happen shortly after the 12-hour access cutoff rather than at the exact second. Copies that someone already downloaded or saved cannot be removed remotely.
-
----
+- The birthday link and its media/comment access expire 12 hours after link creation.
+- A Vercel Cron job checks expired records every 15 minutes. As a result, physical Blob deletion can happen after the access cutoff rather than at the exact second.
+- Signed upload limits are **100 MiB per image or audio file** and **150 MiB per video file**. Browser and network constraints may be lower.
+- Someone who saves or downloads a copy before expiry cannot have that external copy removed by Wishloom.
 
 ## 📁 Project structure
 
 ```text
 wishloom/
 ├── api/
-│   ├── cleanup.js       # Deletes expired pages, media, and comments
-│   ├── comments.js      # Reads and saves recipient comments
-│   ├── create-gift.js   # Stores the finished page and returns its link
-│   ├── gift.js          # Serves a birthday page while its link is valid
-│   ├── media.js         # Serves private media while its link is valid
-│   └── upload.js        # Issues signed upload tokens for private media
+│   ├── cleanup.js        # Scheduled deletion of expired private files
+│   ├── comments.js       # Read and post recipient comments
+│   ├── create-gift.js    # Save a finished birthday page and return its link
+│   ├── gift.js           # Serve a birthday page while its link is valid
+│   ├── media.js          # Issue expiring access to private media
+│   ├── music-search.js   # Search songs with YouTube Data API v3
+│   └── upload.js         # Create signed direct-upload tokens
 ├── assets/
-│   ├── wishloom-background.mp3     # Built-in looping soundtrack
-│   └── wishloom-final-default.mp3  # Default final-wish song
+│   ├── chapter-five-default.mp4
+│   ├── wishloom-background.mp3
+│   └── wishloom-final-default.mp3
 ├── outputs/
-│   ├── assets/          # Default finale audio for the mirrored page
-│   └── index.html       # Mirrored copy of the main page
-├── index.html           # Birthday builder and recipient experience
+│   ├── assets/           # Mirrored default finale asset
+│   └── index.html        # Mirrored page copy
+├── index.html            # Creator, preview, and recipient experience
 ├── LICENSE
 ├── package.json
 ├── README.md
-└── vercel.json          # 15-minute expiry-cleanup schedule
+└── vercel.json           # Expiry cleanup schedule (every 15 minutes)
 ```
 
----
+## 🔐 Privacy and media
+
+Birthday pages and uploaded files are stored in a private Blob store and served through expiring routes. Share links are intended for the recipient; anyone with an active link can view that birthday story until it expires. Do not upload media you do not have permission to share.
 
 ## 📜 License
 
-The project source is available under the [MIT License](LICENSE). Audio and other media assets may have separate rights; check their terms before redistributing them.
+Wishloom’s source code is licensed under the [MIT License](LICENSE). Media files may have separate usage rights; check their terms before redistributing them.
 
 ---
 
-## 🤝 Contributing
+<div align="center">
 
-Ideas and improvements for the themes, animations, accessibility, or birthday-story experience are welcome. Open an issue or submit a pull request.
+Made with 💛 by **Subrata Das**
 
----
-
-<p align="center">Made with 💛 by <a href="https://github.com/subratadas7">Subrata Das</a></p>
+</div>
