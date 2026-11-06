@@ -59,15 +59,14 @@ export default async function handler(req, res) {
         if (!/^(image|audio|video)\/[a-z0-9.+-]+$/.test(fileType)) {
           throw new Error('This file type is not supported.');
         }
-        // Browsers and messaging apps commonly label audio-only WebM voice
-        // notes as video/webm. Permit both WebM labels for the same upload
-        // so the blob client and signed token agree on the container type.
-        // Video MIME families are accepted as a wildcard to cover WebM labels
-        // emitted by mobile browsers and recorded clips.
+        // Mobile browsers and messaging apps can report audio-only WebM as
+        // video/webm (sometimes with codec parameters). Accept either media
+        // family for WebM voice notes so the signed token matches the actual
+        // Content-Type header sent by the browser.
         const allowedContentTypes = fileType.startsWith('video/')
           ? ['video/*']
           : fileType === 'audio/webm'
-            ? ['audio/webm', 'video/webm']
+            ? ['audio/*', 'video/*']
             : [fileType];
         const maximumSizeInBytes = fileType.startsWith('video/') ? 150 * 1024 * 1024 : 100 * 1024 * 1024;
         const validUntil = Math.min(Date.now() + 30 * 60 * 1000, expiresAt);
