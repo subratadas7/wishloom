@@ -33,7 +33,8 @@ Wishloom guides a creator through a seven-scene birthday experience. The creator
 - A built-in soundtrack loops from the opening until the candle wish.
 - The recipient can blow out candles with the microphone or tap the flames.
 - When the candles go out, the page plays the birthday celebration effects, including the age-based balloon pop.
-- The final surprise plays the included default song. A creator can upload a personal song to replace it for that birthday page.
+- Preview and trim the final song before sharing. The chosen start and end points apply to the default song, a personal upload, or a selected YouTube track.
+- The final surprise plays the included default song unless the creator selects a YouTube song or uploads a personal song.
 
 ### 🔗 Share and leave a note
 
@@ -50,7 +51,7 @@ Wishloom guides a creator through a seven-scene birthday experience. The creator
 1. Open [Wishloom](https://wishloom-me.vercel.app/).
 2. Enter the recipient’s name and personalize the messages, theme, cake, candles, and effects.
 3. Move through the scenes to add photos, soundtrack artwork, a video, or a voice message. These uploads are optional.
-4. In the final scene, optionally add a personal finale song. It replaces the default song for this birthday page.
+4. In the final scene, preview the default song, select a YouTube song, or upload a personal song. Adjust the start and end points to choose the section that plays during the final surprise.
 5. Select **Create birthday link**, then copy the link or share it with WhatsApp.
 
 The recipient link is read-only: it shows the completed birthday story, without the creator’s upload and editing controls.
@@ -92,7 +93,7 @@ Install the Vercel CLI, link the repository to your Vercel project, and run `ver
 
 ## ⏳ Expiry details
 
-Final-song search uses the YouTube Data API and plays selected videos in YouTube’s embedded player; song uploads play in the page audio player. Search requires a `YOUTUBE_API_KEY` in Vercel.
+Final-song search uses the YouTube Data API and plays selected videos in YouTube’s embedded player; song uploads play in the page audio player. Creators can preview and trim the selected song, and the recipient hears only the chosen segment. Search requires a `YOUTUBE_API_KEY` in Vercel.
 
 A birthday link and its media are refused after 12 hours. A scheduled cleanup checks for expired pages, photos, videos, audio, and comments every 15 minutes and deletes them from the connected Private Blob store. Vercel may delay scheduled runs by up to 15 minutes, and deletion can take up to 60 seconds to propagate, so physical removal can happen shortly after the 12-hour access cutoff rather than at the exact second. Copies that someone already downloaded or saved cannot be removed remotely.
 

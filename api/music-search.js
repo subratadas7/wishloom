@@ -1,4 +1,10 @@
 const API_URL = 'https://www.googleapis.com/youtube/v3/search';
+const VIDEOS_URL = 'https://www.googleapis.com/youtube/v3/videos';
+
+function durationSeconds(value = '') {
+  const match = String(value).match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
+  return match ? Number(match[1] || 0) * 3600 + Number(match[2] || 0) * 60 + Number(match[3] || 0) : 0;
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -30,7 +36,18 @@ export default async function handler(req, res) {
       return res.status(response.status === 403 ? 503 : 502).json({ error: 'YouTube could not complete the search. Check the API key and its quota.' });
     }
 
-    const results = (payload.items || []).flatMap(item => {
+    const items = payload.items || [];
+    const ids = items.map(item => String(item?.id?.videoId || '')).filter(id => /^[A-Za-z0-9_-]{11}$/.test(id));
+    const durationById = new Map();
+    if (ids.length) {
+      const detailsParams = new URLSearchParams({ part: 'contentDetails', id: ids.join(','), key: apiKey });
+      const detailsResponse = await fetch(`${VIDEOS_URL}?${detailsParams}`);
+      if (detailsResponse.ok) {
+        const details = await detailsResponse.json();
+        for (const item of details.items || []) durationById.set(item.id, durationSeconds(item.contentDetails?.duration));
+      }
+    }
+    const results = items.flatMap(item => {
       const id = String(item?.id?.videoId || '');
       if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return [];
       return [{
@@ -38,6 +55,7 @@ export default async function handler(req, res) {
         title: String(item?.snippet?.title || 'Untitled song').slice(0, 160),
         channel: String(item?.snippet?.channelTitle || 'YouTube').slice(0, 100),
         thumbnail: String(item?.snippet?.thumbnails?.medium?.url || item?.snippet?.thumbnails?.default?.url || ''),
+        duration: durationById.get(id) || 0,
         url: `https://www.youtube.com/watch?v=${id}`,
       }];
     });
