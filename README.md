@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎂 Wishloom
+# 🎂 wishvilo
 
 ### A birthday story, made just for someone special.
 
@@ -13,7 +13,7 @@ Create a multi-chapter birthday surprise with personal photos, messages, music, 
 [![CSS](https://img.shields.io/badge/CSS3-Responsive%20Design-1572b6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-f7df1e?style=for-the-badge&logo=javascript&logoColor=111)](https://developer.mozilla.org/docs/Web/JavaScript)
 
-[Open Wishloom](https://wishloom-me.vercel.app/) · [Features](#-features) · [Run locally](#-run-locally) · [Deploy](#-deploy-to-vercel)
+[Open wishvilo](https://wishloom-me.vercel.app/) · [Features](#-features) · [Run locally](#-run-locally) · [Deploy](#-deploy-to-vercel)
 
 </div>
 
@@ -21,7 +21,7 @@ Create a multi-chapter birthday surprise with personal photos, messages, music, 
 
 ## 💌 About
 
-Wishloom is a responsive birthday-wish website that turns a greeting into a guided story. A creator personalizes the experience, checks the recipient view, and creates a shareable link. The recipient gets the finished story without the creator’s editing controls.
+wishvilo is a responsive birthday-wish website that turns a greeting into a guided story. A creator personalizes the experience, checks the recipient view, and creates a shareable link. The recipient gets the finished story without the creator’s editing controls.
 
 The experience opens with an invitation, then guides the recipient through seven chapters. Chapter 4 is omitted from the shared story when neither a personal video nor a voice message was added.
 
@@ -34,7 +34,7 @@ The experience opens with an invitation, then guides the recipient through seven
 - Choose from 7 birthday designs, 7 animation styles, 9 cake designs, and 5 candle styles; these choices start unselected.
 - Pick a candle count and recipient age for the candle and balloon effects.
 - Preview the finished recipient experience before creating the share link.
-- The creator’s Wishloom credit and social profile links stay in the footer.
+- The creator’s wishvilo credit and social profile links stay in the footer.
 
 ### Build a photo story
 
@@ -56,7 +56,7 @@ The experience opens with an invitation, then guides the recipient through seven
 
 - The recipient can blow into the microphone or tap the candle flames to extinguish them.
 - The birthday message uses the recipient’s name.
-- When the candles go out, Wishloom launches birthday effects, including balloon pops based on the age and an optional fireworks finale.
+- When the candles go out, wishvilo launches birthday effects, including balloon pops based on the age and an optional fireworks finale.
 
 ### Share privately
 
@@ -65,7 +65,7 @@ The experience opens with an invitation, then guides the recipient through seven
 - Birthday pages, media, and comments become inaccessible after **12 hours**.
 - A scheduled cleanup checks for expired files every **15 minutes** and removes them from the connected private Vercel Blob store.
 
-> **Browser audio note:** Browsers may block automatic audio until someone interacts with the page. Wishloom starts music in response to the recipient’s actions; the final song begins when they open the final surprise.
+> **Browser audio note:** Browsers may block automatic audio until someone interacts with the page. wishvilo starts music in response to the recipient’s actions; the final song begins when they open the final surprise.
 
 ## 📖 The invitation and seven chapters
 
@@ -154,7 +154,7 @@ A local static file server can display the front end, but sharing, private uploa
 - The birthday link and its media/comment access expire 12 hours after link creation.
 - A Vercel Cron job checks expired records every 15 minutes. As a result, physical Blob deletion can happen after the access cutoff rather than at the exact second.
 - Signed upload limits are **100 MiB per image or audio file** and **150 MiB per video file**. Browser and network constraints may be lower.
-- Someone who saves or downloads a copy before expiry cannot have that external copy removed by Wishloom.
+- Someone who saves or downloads a copy before expiry cannot have that external copy removed by wishvilo.
 
 ## 📁 Project structure
 
@@ -188,7 +188,7 @@ Birthday pages and uploaded files are stored in a private Blob store and served 
 
 ## 📜 License
 
-Wishloom’s source code is licensed under the [MIT License](LICENSE). Media files may have separate usage rights; check their terms before redistributing them.
+wishvilo’s source code is licensed under the [MIT License](LICENSE). Media files may have separate usage rights; check their terms before redistributing them.
 
 ---
 
