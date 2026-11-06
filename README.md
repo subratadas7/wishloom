@@ -61,7 +61,9 @@ The experience opens with an invitation, then guides the recipient through seven
 ### Share privately
 
 - Create a unique birthday link, copy it, or share it through WhatsApp.
-- Recipients can leave a name and comment on the birthday page.
+- Recipients can leave a name and comment on the birthday page without signing in.
+- Optional Google sign-in lets participants save their comments to an account; creators can view their own comments and birthday links in an account page.
+- Signed-in users can edit their display name and optionally save their birth year. Guest comments can be linked to an account after sign-in.
 - Birthday pages, media, and comments become inaccessible after **12 hours**.
 - A scheduled cleanup checks for expired files every **15 minutes** and removes them from the connected private Vercel Blob store.
 
@@ -89,6 +91,8 @@ The experience opens with an invitation, then guides the recipient through seven
 | Private media and birthday pages | Vercel Blob (`@vercel/blob`) |
 | Direct media uploads | Vercel Blob client and signed upload tokens |
 | Song search | YouTube Data API v3; selected songs use YouTube’s embedded player |
+| Optional accounts | Google OAuth 2.0 sign-in with signed, secure session cookies |
+| Account data | Private Vercel Blob records, keyed by a one-way hash of the Google account ID |
 | Camera and microphone | Browser MediaDevices and MediaRecorder APIs |
 | Expiry cleanup | Vercel Cron schedule |
 
@@ -104,7 +108,7 @@ There is no front-end build step. The main interface and recipient experience ar
 
 ## 🛠️ Run locally
 
-The project has no build command. To run its Vercel API routes locally:
+The project has no build command. Copy `.env.example` to `.env.local` for local secrets and never commit that file. To run its Vercel API routes locally:
 
 1. Install Node.js and the Vercel CLI.
 2. Clone the repository and install dependencies:
@@ -137,7 +141,8 @@ A local static file server can display the front end, but sharing, private uploa
 3. Confirm the production project receives `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY`, and Vercel Blob authentication. Vercel’s project connection supplies these values; do not paste a Blob token into the public source code.
 4. Add `CRON_SECRET` as a private Vercel environment variable so the scheduled cleanup endpoint is protected.
 5. To enable YouTube song search, enable **YouTube Data API v3** in Google Cloud, create and restrict an API key, then add it to Vercel as `YOUTUBE_API_KEY`. Song uploads do not require this key.
-6. Deploy. Later pushes to the connected GitHub branch trigger new Vercel deployments.
+6. To enable Google sign-in, configure the Google OAuth consent screen and create an OAuth **Web application** client. Add `https://wishloom-me.vercel.app/api/auth/callback` as an authorized redirect URI (and `http://localhost:3000/api/auth/callback` only if testing locally). Add the client ID and secret to Vercel as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and add a separate long random value as `SESSION_SECRET`. Keep both secrets private. If the consent screen is in testing mode, add the Google accounts you will use as test users.
+7. Deploy. Sign-in becomes available after those three settings are present in Production. Recipients can still view and comment without logging in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
 
 ### Environment variables
 
@@ -148,10 +153,13 @@ A local static file server can display the front end, but sharing, private uploa
 | Vercel Blob authentication | Private Blob operations | Vercel project connection / deployment environment |
 | `CRON_SECRET` | Protecting scheduled expiry cleanup | Generate a long random secret and add it in Vercel |
 | `YOUTUBE_API_KEY` | Searching songs on YouTube | Google Cloud API key for YouTube Data API v3 |
+| `GOOGLE_CLIENT_ID` | Starting Google sign-in | Google OAuth Web application client |
+| `GOOGLE_CLIENT_SECRET` | Completing Google sign-in on the server | Google OAuth Web application client; keep private |
+| `SESSION_SECRET` | Signing account sessions | A separate long random secret; keep private |
 
 ## ⏳ Expiry and upload limits
 
-- The birthday link and its media/comment access expire 12 hours after link creation.
+- The birthday link, its media/comments, and the matching account activity records expire 12 hours after link creation. The Google profile fields used by the account remain in private storage for future sign-ins; birthday activity records expire with their links.
 - A Vercel Cron job checks expired records every 15 minutes. As a result, physical Blob deletion can happen after the access cutoff rather than at the exact second.
 - Signed upload limits are **100 MiB per image or audio file** and **150 MiB per video file**. Browser and network constraints may be lower.
 - Someone who saves or downloads a copy before expiry cannot have that external copy removed by wishvilo.
@@ -162,6 +170,9 @@ A local static file server can display the front end, but sharing, private uploa
 wishvilo/
 ├── api/
 │   ├── cleanup.js        # Scheduled deletion of expired private files
+│   ├── account.js        # Private profile, links, and saved comments
+│   ├── auth-utils.js     # Signed sessions and account helpers
+│   ├── auth/             # Google OAuth start, callback, status, and sign-out
 │   ├── comments.js       # Read and post recipient comments
 │   ├── create-gift.js    # Save a finished birthday page and return its link
 │   ├── gift.js           # Serve a birthday page while its link is valid

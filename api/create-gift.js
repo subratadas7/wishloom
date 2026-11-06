@@ -1,4 +1,5 @@
 import { put } from '@vercel/blob';
+import { accountKey, readSession } from './auth-utils.js';
 
 function expirationFor(id) {
   if (!/^[a-f0-9]{24}$/.test(id || '')) return 0;
@@ -9,6 +10,7 @@ export default async function handler(req, res) {
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { html, id } = body || {};
+    const recipient = typeof body?.recipient === 'string' ? body.recipient.trim().slice(0, 80) : '';
     const expiresAt = expirationFor(id);
     if (!expiresAt || Date.now() >= expiresAt) {
       return res.status(400).json({ error: 'This birthday link has expired. Create a fresh link.' });
@@ -24,6 +26,11 @@ export default async function handler(req, res) {
       contentType: 'text/html; charset=utf-8',
       cacheControlMaxAge: 0,
     });
+    const owner = readSession(req);
+    if (owner) {
+      const key = accountKey(owner.sub);
+      await put(`wishvilo/accounts/${key}/gifts/${id}.json`, JSON.stringify({ kind: 'gift', id, url: `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers['x-forwarded-host'] || req.headers.host}/api/gift?id=${id}`, recipient: recipient || 'Birthday surprise', createdAt: new Date().toISOString(), expiresAt: new Date(expiresAt).toISOString() }), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json; charset=utf-8', cacheControlMaxAge: 0 });
+    }
     const host = req.headers['x-forwarded-host'] || req.headers.host;
     const protocol = req.headers['x-forwarded-proto'] || 'https';
     return res.status(200).json({
