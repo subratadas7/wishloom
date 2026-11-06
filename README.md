@@ -63,6 +63,8 @@ The experience opens with an invitation, then guides the recipient through seven
 - Create a unique birthday link, copy it, or share it through WhatsApp.
 - Recipients can leave a name and comment on the birthday page without signing in.
 - Optional Google sign-in lets participants save their comments to an account; creators can view their own comments and birthday links in an account page.
+- Accounts can also be created with an email address and password. A six-digit email code must be verified before the account is created.
+- Email/password users can sign in and reset a forgotten password with a one-time email code. Google users can optionally set a Wishvilo password after verifying their Google account email, then change it from the account page.
 - Signed-in users can edit their display name and optionally save their birth year. Guest comments can be linked to an account after sign-in.
 - Birthday pages, media, and comments become inaccessible after **12 hours**.
 - A scheduled cleanup checks for expired files every **15 minutes** and removes them from the connected private Vercel Blob store.
@@ -91,8 +93,10 @@ The experience opens with an invitation, then guides the recipient through seven
 | Private media and birthday pages | Vercel Blob (`@vercel/blob`) |
 | Direct media uploads | Vercel Blob client and signed upload tokens |
 | Song search | YouTube Data API v3; selected songs use YouTube’s embedded player |
-| Optional accounts | Google OAuth 2.0 sign-in with signed, secure session cookies |
-| Account data | Private Vercel Blob records, keyed by a one-way hash of the Google account ID |
+| Account sign-in | Google OAuth 2.0 or verified email/password; signed, secure session cookies |
+| Password security | Node.js `scrypt` password hashes; one-time verification codes are hashed, expire after 10 minutes, and have a five-attempt limit |
+| Account data | Private Vercel Blob records; account IDs and email addresses are stored using one-way hashes for record paths |
+| Verification email | Resend API; requires a verified sender address |
 | Camera and microphone | Browser MediaDevices and MediaRecorder APIs |
 | Expiry cleanup | Vercel Cron schedule |
 
@@ -141,8 +145,9 @@ A local static file server can display the front end, but sharing, private uploa
 3. Confirm the production project receives `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY`, and Vercel Blob authentication. Vercel’s project connection supplies these values; do not paste a Blob token into the public source code.
 4. Add `CRON_SECRET` as a private Vercel environment variable so the scheduled cleanup endpoint is protected.
 5. To enable YouTube song search, enable **YouTube Data API v3** in Google Cloud, create and restrict an API key, then add it to Vercel as `YOUTUBE_API_KEY`. Song uploads do not require this key.
-6. To enable Google sign-in, configure the Google OAuth consent screen and create an OAuth **Web application** client. Add `https://wishvilo.vercel.app/api/auth/callback` as an authorized redirect URI (and `http://localhost:3000/api/auth/callback` only if testing locally). Add the client ID and secret to Vercel as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and add a separate long random value as `SESSION_SECRET`. Keep both secrets private. If the consent screen is in testing mode, add the Google accounts you will use as test users.
-7. Deploy. Sign-in becomes available after those three settings are present in Production. Recipients can still view and comment without logging in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
+6. To enable Google sign-in, configure the Google OAuth consent screen and create an OAuth **Web application** client. Add your production domain followed by `/api/auth/callback` as an authorized redirect URI (for example, `https://your-domain.vercel.app/api/auth/callback`); add `http://localhost:3000/api/auth/callback` only for local testing. Add the client ID and secret to Vercel as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and add a separate long random value as `SESSION_SECRET`. Keep all secrets private. If the consent screen is in testing mode, add the Google accounts you will use as test users.
+7. To enable account creation, verification codes, and password reset, create a [Resend](https://resend.com/) account, verify a sender domain, then add `RESEND_API_KEY` and `AUTH_FROM_EMAIL` to Vercel Production. Use a sender value such as `Wishvilo <auth@your-verified-domain.com>` and replace it with an address on the domain you verified in Resend.
+8. Redeploy after adding environment variables. Google sign-in requires its three settings; email/password features require Resend’s two settings plus `SESSION_SECRET`. Recipients can still view and comment without logging in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
 
 ### Environment variables
 
@@ -156,6 +161,8 @@ A local static file server can display the front end, but sharing, private uploa
 | `GOOGLE_CLIENT_ID` | Starting Google sign-in | Google OAuth Web application client |
 | `GOOGLE_CLIENT_SECRET` | Completing Google sign-in on the server | Google OAuth Web application client; keep private |
 | `SESSION_SECRET` | Signing account sessions | A separate long random secret; keep private |
+| `RESEND_API_KEY` | Sending sign-up, password setup, and reset codes | Resend API key; keep private |
+| `AUTH_FROM_EMAIL` | Sender address for verification emails | An email address on the domain verified with Resend, such as `Wishvilo <auth@your-domain.com>` |
 
 ## ⏳ Expiry and upload limits
 
@@ -171,7 +178,7 @@ wishvilo/
 ├── api/
 │   ├── cleanup.js        # Scheduled deletion of expired private files
 │   ├── account.js        # Private profile, links, and saved comments
-│   ├── auth/             # Google OAuth start, callback, status, and sign-out
+│   ├── auth/             # Google OAuth, email/password flows, status, and sign-out
 │   ├── comments.js       # Read and post recipient comments
 │   ├── create-gift.js    # Save a finished birthday page and return its link
 │   ├── gift.js           # Serve a birthday page while its link is valid
@@ -186,7 +193,8 @@ wishvilo/
 │   ├── assets/           # Mirrored default finale asset
 │   └── index.html        # Mirrored page copy
 ├── lib/
-│   └── auth-utils.js     # Shared signed-session and account helpers
+│   ├── auth-utils.js     # Shared signed-session and account helpers
+│   └── password-auth.js  # Password hashing, private credential records, and email codes
 ├── index.html            # Creator, preview, and recipient experience
 ├── LICENSE
 ├── package.json

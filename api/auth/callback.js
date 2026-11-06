@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const profileResponse = await fetch('https://openidconnect.googleapis.com/v1/userinfo', { headers: { Authorization: `Bearer ${token.access_token}` } });
     const profile = await profileResponse.json();
     if (!profileResponse.ok || !profile.sub || profile.email_verified !== true) throw new Error('Google could not verify this account.');
-    setCookie(res, 'wishvilo_session', signSession({ sub: profile.sub, name: String(profile.name || profile.given_name || 'Wishvilo user').slice(0, 80), email: String(profile.email || '').slice(0, 160), picture: String(profile.picture || '').slice(0, 1000) }), 30 * 24 * 60 * 60);
+    setCookie(res, 'wishvilo_session', signSession({ sub: profile.sub, name: String(profile.name || profile.given_name || 'Wishvilo user').slice(0, 80), email: String(profile.email || '').slice(0, 160), picture: String(profile.picture || '').slice(0, 1000), provider: 'google' }), 30 * 24 * 60 * 60);
     return res.redirect(302, '/?account=1');
   } catch (error) {
     console.error('Wishvilo Google sign-in failed:', error?.message || error);

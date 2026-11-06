@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { get, list, put } from '@vercel/blob';
 import { accountKey, readSession, requestBody } from '../lib/auth-utils.js';
+import { getPasswordUser } from '../lib/password-auth.js';
 
 function giftExpiry(id) {
   return /^[a-f0-9]{24}$/.test(id || '') ? Number.parseInt(id.slice(0, 8), 16) * 1000 + 12 * 60 * 60 * 1000 : 0;
@@ -19,7 +20,7 @@ async function save(pathname, value) {
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, private');
   const user = readSession(req);
-  if (!user) return res.status(401).json({ error: 'Sign in with Google to open your Wishvilo account.' });
+  if (!user) return res.status(401).json({ error: 'Sign in to open your Wishvilo account.' });
   const key = accountKey(user.sub);
   const profilePath = `wishvilo/profiles/${key}.json`;
 
@@ -30,7 +31,8 @@ export default async function handler(req, res) {
       const records = (await Promise.all(page.blobs.map(blob => readJson(blob.pathname)))).filter(Boolean).filter(item => item.expiresAt && Date.now() < new Date(item.expiresAt).getTime());
       const gifts = records.filter(item => item.kind === 'gift').sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       const comments = records.filter(item => item.kind === 'comment').sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-      return res.status(200).json({ user: { name: profile?.name || user.name, email: user.email, picture: user.picture, birthYear: profile?.birthYear || '' }, profileExists: Boolean(profile), gifts, comments });
+      const passwordAccount = await getPasswordUser(user.email);
+      return res.status(200).json({ user: { name: profile?.name || user.name, email: user.email, picture: user.picture, birthYear: profile?.birthYear || '', provider: user.provider || 'google', hasPassword: Boolean(passwordAccount?.hash && passwordAccount.sub === user.sub) }, profileExists: Boolean(profile), gifts, comments });
     }
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
     const body = requestBody(req);
