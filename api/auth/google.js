@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { requestOrigin, setCookie } from '../auth-utils.js';
+import { requestOrigin, setCookie } from '../../lib/auth-utils.js';
 
 export default function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).send('Method not allowed.');

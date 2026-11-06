@@ -141,7 +141,7 @@ A local static file server can display the front end, but sharing, private uploa
 3. Confirm the production project receives `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY`, and Vercel Blob authentication. Vercel’s project connection supplies these values; do not paste a Blob token into the public source code.
 4. Add `CRON_SECRET` as a private Vercel environment variable so the scheduled cleanup endpoint is protected.
 5. To enable YouTube song search, enable **YouTube Data API v3** in Google Cloud, create and restrict an API key, then add it to Vercel as `YOUTUBE_API_KEY`. Song uploads do not require this key.
-6. To enable Google sign-in, configure the Google OAuth consent screen and create an OAuth **Web application** client. Add `https://wishloom-me.vercel.app/api/auth/callback` as an authorized redirect URI (and `http://localhost:3000/api/auth/callback` only if testing locally). Add the client ID and secret to Vercel as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and add a separate long random value as `SESSION_SECRET`. Keep both secrets private. If the consent screen is in testing mode, add the Google accounts you will use as test users.
+6. To enable Google sign-in, configure the Google OAuth consent screen and create an OAuth **Web application** client. Add `https://wishvilo.vercel.app/api/auth/callback` as an authorized redirect URI (and `http://localhost:3000/api/auth/callback` only if testing locally). Add the client ID and secret to Vercel as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and add a separate long random value as `SESSION_SECRET`. Keep both secrets private. If the consent screen is in testing mode, add the Google accounts you will use as test users.
 7. Deploy. Sign-in becomes available after those three settings are present in Production. Recipients can still view and comment without logging in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
 
 ### Environment variables
@@ -171,7 +171,6 @@ wishvilo/
 ├── api/
 │   ├── cleanup.js        # Scheduled deletion of expired private files
 │   ├── account.js        # Private profile, links, and saved comments
-│   ├── auth-utils.js     # Signed sessions and account helpers
 │   ├── auth/             # Google OAuth start, callback, status, and sign-out
 │   ├── comments.js       # Read and post recipient comments
 │   ├── create-gift.js    # Save a finished birthday page and return its link
@@ -186,6 +185,8 @@ wishvilo/
 ├── outputs/
 │   ├── assets/           # Mirrored default finale asset
 │   └── index.html        # Mirrored page copy
+├── lib/
+│   └── auth-utils.js     # Shared signed-session and account helpers
 ├── index.html            # Creator, preview, and recipient experience
 ├── LICENSE
 ├── package.json

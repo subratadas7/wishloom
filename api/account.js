@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { get, list, put } from '@vercel/blob';
-import { accountKey, readSession, requestBody } from './auth-utils.js';
+import { accountKey, readSession, requestBody } from '../lib/auth-utils.js';
 
 function giftExpiry(id) {
   return /^[a-f0-9]{24}$/.test(id || '') ? Number.parseInt(id.slice(0, 8), 16) * 1000 + 12 * 60 * 60 * 1000 : 0;

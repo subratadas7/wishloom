@@ -1,5 +1,5 @@
 import { put } from '@vercel/blob';
-import { accountKey, readSession } from './auth-utils.js';
+import { accountKey, readSession } from '../lib/auth-utils.js';
 
 function expirationFor(id) {
   if (!/^[a-f0-9]{24}$/.test(id || '')) return 0;

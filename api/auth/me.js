@@ -1,4 +1,4 @@
-import { readSession } from '../auth-utils.js';
+import { readSession } from '../../lib/auth-utils.js';
 
 export default function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed.' });

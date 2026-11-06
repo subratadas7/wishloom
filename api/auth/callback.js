@@ -1,4 +1,4 @@
-import { clearCookie, requestOrigin, setCookie, signSession } from '../auth-utils.js';
+import { clearCookie, requestOrigin, setCookie, signSession } from '../../lib/auth-utils.js';
 
 function readCookie(req, name) {
   return (req.headers.cookie || '').split(';').map(part => part.trim()).find(part => part.startsWith(`${name}=`))?.slice(name.length + 1) || '';
