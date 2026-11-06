@@ -1,9 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [
-    {
+  "schedules": {
+    "birthday-expiry-cleanup": {
       "path": "/api/cleanup",
-      "schedule": "20 0 * * *"
+      "schedule": "*/15 * * * *",
+      "requestMethod": "GET"
     }
-  ]
+  }
 }

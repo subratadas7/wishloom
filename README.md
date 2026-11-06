@@ -65,7 +65,7 @@ The recipient link is read-only: it shows the completed birthday story, without 
 | Camera and voice recording | Browser MediaRecorder and MediaDevices APIs |
 | Photo editing | Browser image and canvas APIs |
 | Secure media and birthday-page storage | Vercel Functions and Private Vercel Blob |
-| Expiry cleanup | Vercel Cron |
+| Expiry cleanup | Vercel Schedules |
 | Blob client | `@vercel/blob` 2.8.2 |
 
 The site has no frontend build step. The main experience lives in `index.html`; the `/api` routes provide the sharing and storage features.
@@ -90,7 +90,7 @@ Install the Vercel CLI, link the repository to your Vercel project, and run `ver
 
 ## ⏳ Expiry details
 
-A birthday link and its media are refused after 12 hours. The scheduled cleanup removes expired Blob files on its next run; on Vercel Hobby, cleanup runs daily at **00:20 UTC**. Therefore, stored files may remain until that cleanup runs, even though access has already ended. Because cleanup runs once daily, stored files can remain until the next cleanup run. Copies that someone already downloaded or saved cannot be removed remotely.
+A birthday link and its media are refused after 12 hours. A scheduled cleanup checks for expired pages, photos, videos, audio, and comments every 15 minutes and deletes them from the connected Private Blob store. Vercel may delay scheduled runs by up to 15 minutes, and deletion can take up to 60 seconds to propagate, so physical removal can happen shortly after the 12-hour access cutoff rather than at the exact second. Copies that someone already downloaded or saved cannot be removed remotely.
 
 ---
 
@@ -115,7 +115,7 @@ wishloom/
 ├── LICENSE
 ├── package.json
 ├── README.md
-└── vercel.json          # Daily expiry-cleanup schedule
+└── vercel.json          # 15-minute expiry-cleanup schedule
 ```
 
 ---
