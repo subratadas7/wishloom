@@ -146,8 +146,8 @@ A local static file server can display the front end, but sharing, private uploa
 4. Add `CRON_SECRET` as a private Vercel environment variable so the scheduled cleanup endpoint is protected.
 5. To enable YouTube song search, enable **YouTube Data API v3** in Google Cloud, create and restrict an API key, then add it to Vercel as `YOUTUBE_API_KEY`. Song uploads do not require this key.
 6. To enable Google sign-in, configure the Google OAuth consent screen and create an OAuth **Web application** client. Add your production domain followed by `/api/auth/callback` as an authorized redirect URI (for example, `https://your-domain.vercel.app/api/auth/callback`); add `http://localhost:3000/api/auth/callback` only for local testing. Add the client ID and secret to Vercel as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and add a separate long random value as `SESSION_SECRET`. Keep all secrets private. If the consent screen is in testing mode, add the Google accounts you will use as test users.
-7. To enable account creation, verification codes, and password reset, create a [Resend](https://resend.com/) account, verify a sender domain, then add `RESEND_API_KEY` and `AUTH_FROM_EMAIL` to Vercel Production. Use a sender value such as `Wishvilo <auth@your-verified-domain.com>` and replace it with an address on the domain you verified in Resend.
-8. Redeploy after adding environment variables. Google sign-in requires its three settings; email/password features require Resend’s two settings plus `SESSION_SECRET`. Recipients can still view and comment without logging in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
+7. To enable account creation, verification codes, and password reset without buying a domain, create a [Twilio SendGrid](https://sendgrid.com/) account and verify a **Single Sender** email address that you own. Then create an API key with Mail Send permission and add `SENDGRID_API_KEY` and `AUTH_FROM_EMAIL` to Vercel Production. `AUTH_FROM_EMAIL` must be the exact verified address only (for example, `you@example.com`), not a display-name format. Single Sender works without DNS access but SendGrid describes it as suitable for testing; delivery to Gmail and other providers may be unreliable until you authenticate a domain. If you already have Resend configured, `RESEND_API_KEY` remains supported as a fallback when `SENDGRID_API_KEY` is absent.
+8. Redeploy after adding environment variables. Google sign-in requires its three settings; email/password features require `SENDGRID_API_KEY`, `AUTH_FROM_EMAIL`, and `SESSION_SECRET` (or the legacy Resend pair). Recipients can still view and comment without logging in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
 
 ### Environment variables
 
@@ -161,8 +161,9 @@ A local static file server can display the front end, but sharing, private uploa
 | `GOOGLE_CLIENT_ID` | Starting Google sign-in | Google OAuth Web application client |
 | `GOOGLE_CLIENT_SECRET` | Completing Google sign-in on the server | Google OAuth Web application client; keep private |
 | `SESSION_SECRET` | Signing account sessions | A separate long random secret; keep private |
-| `RESEND_API_KEY` | Sending sign-up, password setup, and reset codes | Resend API key; keep private |
-| `AUTH_FROM_EMAIL` | Sender address for verification emails | An email address on the domain verified with Resend, such as `Wishvilo <auth@your-domain.com>` |
+| `SENDGRID_API_KEY` | Sending sign-up, password setup, and reset codes | SendGrid API key with Mail Send permission; keep private |
+| `AUTH_FROM_EMAIL` | Sender address for verification emails | The exact email address verified as a SendGrid Single Sender, e.g. `you@example.com` |
+| `RESEND_API_KEY` | Optional legacy email sending fallback | Resend API key; used only if `SENDGRID_API_KEY` is not set |
 
 ## ⏳ Expiry and upload limits
 
