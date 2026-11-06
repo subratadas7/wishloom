@@ -65,6 +65,7 @@ The recipient link is read-only: it shows the completed birthday story, without 
 | Camera and voice recording | Browser MediaRecorder and MediaDevices APIs |
 | Photo editing | Browser image and canvas APIs |
 | Secure media and birthday-page storage | Vercel Functions and Private Vercel Blob |
+| Final song search | Official YouTube Data API search and YouTube embedded player |
 | Expiry cleanup | Vercel Schedules |
 | Blob client | `@vercel/blob` 2.8.2 |
 
@@ -78,7 +79,8 @@ The site has no frontend build step. The main experience lives in `index.html`; 
 2. Use the **Other** framework preset and `./` as the project root directory.
 3. Create a **Private Vercel Blob** store and connect it to the project’s **Production** environment. In the Blob store’s project connection, enable the webhook public key. Confirm that `BLOB_STORE_ID` and `BLOB_WEBHOOK_PUBLIC_KEY` are available to the Production deployment; Vercel provides the deployment authentication.
 4. Add a `CRON_SECRET` environment variable with a long, randomly generated value. Keep it private.
-5. Deploy. Future pushes to the connected branch will trigger deployments automatically.
+5. To enable final-song search, enable **YouTube Data API v3** in Google Cloud, create an API key restricted to this API, and add it in Vercel as `YOUTUBE_API_KEY`. Keep the key out of source files. Uploaded songs work without this key.
+6. Deploy. Future pushes to the connected branch will trigger deployments automatically.
 
 If the page reports that a Blob upload cannot be prepared, check the Private Blob store’s project connection and webhook public key, then redeploy. The public birthday builder does not require a creator API key.
 
@@ -89,6 +91,8 @@ Install the Vercel CLI, link the repository to your Vercel project, and run `ver
 ---
 
 ## ⏳ Expiry details
+
+Final-song search uses the YouTube Data API and plays selected videos in YouTube’s embedded player; song uploads play in the page audio player. Search requires a `YOUTUBE_API_KEY` in Vercel.
 
 A birthday link and its media are refused after 12 hours. A scheduled cleanup checks for expired pages, photos, videos, audio, and comments every 15 minutes and deletes them from the connected Private Blob store. Vercel may delay scheduled runs by up to 15 minutes, and deletion can take up to 60 seconds to propagate, so physical removal can happen shortly after the 12-hour access cutoff rather than at the exact second. Copies that someone already downloaded or saved cannot be removed remotely.
 
