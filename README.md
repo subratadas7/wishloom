@@ -63,8 +63,8 @@ The experience opens with an invitation, then guides the recipient through seven
 - Create a unique birthday link, copy it, or share it through WhatsApp.
 - Recipients can leave a name and comment on the birthday page without signing in.
 - Optional Google sign-in lets participants save their comments to an account; creators can view their own comments and birthday links in an account page.
-- Accounts can also be created with an email address and password. A six-digit email code must be verified before the account is created.
-- Email/password users can sign in and reset a forgotten password with a one-time email code. Google users can optionally set a Wishvilo password after verifying their Google account email, then change it from the account page.
+- Accounts can also be created with an email address and password. Firebase sends a verification link; the email must be verified before sign-in.
+- Email/password users can sign in and request a secure password-reset link. Google users can optionally add a password from the account page, then change it later with their current password.
 - Signed-in users can edit their display name and optionally save their birth year. Guest comments can be linked to an account after sign-in.
 - Birthday pages, media, and comments become inaccessible after **12 hours**.
 - A scheduled cleanup checks for expired files every **15 minutes** and removes them from the connected private Vercel Blob store.
@@ -93,10 +93,10 @@ The experience opens with an invitation, then guides the recipient through seven
 | Private media and birthday pages | Vercel Blob (`@vercel/blob`) |
 | Direct media uploads | Vercel Blob client and signed upload tokens |
 | Song search | YouTube Data API v3; selected songs use YouTube’s embedded player |
-| Account sign-in | Google OAuth 2.0 or verified email/password; signed, secure session cookies |
-| Password security | Node.js `scrypt` password hashes; one-time verification codes are hashed, expire after 10 minutes, and have a five-attempt limit |
+| Account sign-in | Firebase Authentication: Google or verified email/password; exchanged for a signed, secure Wishvilo session cookie |
+| Password security | Firebase-managed password credentials, email verification links, password reset links, and re-authentication for password changes |
 | Account data | Private Vercel Blob records; account IDs and email addresses are stored using one-way hashes for record paths |
-| Verification email | Resend API; requires a verified sender address |
+| Verification email | Firebase Authentication email action links |
 | Camera and microphone | Browser MediaDevices and MediaRecorder APIs |
 | Expiry cleanup | Vercel Cron schedule |
 
@@ -145,9 +145,10 @@ A local static file server can display the front end, but sharing, private uploa
 3. Confirm the production project receives `BLOB_STORE_ID`, `BLOB_WEBHOOK_PUBLIC_KEY`, and Vercel Blob authentication. Vercel’s project connection supplies these values; do not paste a Blob token into the public source code.
 4. Add `CRON_SECRET` as a private Vercel environment variable so the scheduled cleanup endpoint is protected.
 5. To enable YouTube song search, enable **YouTube Data API v3** in Google Cloud, create and restrict an API key, then add it to Vercel as `YOUTUBE_API_KEY`. Song uploads do not require this key.
-6. To enable Google sign-in, configure the Google OAuth consent screen and create an OAuth **Web application** client. Add your production domain followed by `/api/auth/callback` as an authorized redirect URI (for example, `https://your-domain.vercel.app/api/auth/callback`); add `http://localhost:3000/api/auth/callback` only for local testing. Add the client ID and secret to Vercel as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and add a separate long random value as `SESSION_SECRET`. Keep all secrets private. If the consent screen is in testing mode, add the Google accounts you will use as test users.
-7. To enable account creation, verification codes, and password reset without buying a domain, create a [Twilio SendGrid](https://sendgrid.com/) account and verify a **Single Sender** email address that you own. Then create an API key with Mail Send permission and add `SENDGRID_API_KEY` and `AUTH_FROM_EMAIL` to Vercel Production. `AUTH_FROM_EMAIL` must be the exact verified address only (for example, `you@example.com`), not a display-name format. Single Sender works without DNS access but SendGrid describes it as suitable for testing; delivery to Gmail and other providers may be unreliable until you authenticate a domain. If you already have Resend configured, `RESEND_API_KEY` remains supported as a fallback when `SENDGRID_API_KEY` is absent.
-8. Redeploy after adding environment variables. Google sign-in requires its three settings; email/password features require `SENDGRID_API_KEY`, `AUTH_FROM_EMAIL`, and `SESSION_SECRET` (or the legacy Resend pair). Recipients can still view and comment without logging in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
+6. In [Firebase Console](https://console.firebase.google.com/), create a project and add a **Web app**. In **Authentication → Sign-in method**, enable **Email/Password** and **Google**. Firebase sends verification and password-reset links through its email action pages; optionally customize the sender and templates under **Authentication → Templates**.
+7. In **Authentication → Settings → Authorized domains**, add the deployed site domain `wishloom-me.vercel.app` and `localhost` for local development. No paid custom domain is needed.
+8. Copy the Firebase Web app's `apiKey`, `authDomain`, `projectId`, and `appId` into Vercel as `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`, and `FIREBASE_APP_ID`. Add a separate long random value as `SESSION_SECRET`; do not reuse the Firebase API key for it.
+9. Redeploy after adding the variables. The Firebase API key is a browser configuration value; protect it with Firebase API restrictions and authorized domains. `SESSION_SECRET` must remain private. Email verification and password reset links are sent by Firebase, and users can still view and comment on a birthday link without signing in. Later pushes to the connected GitHub branch trigger new Vercel deployments.
 
 ### Environment variables
 
@@ -158,12 +159,11 @@ A local static file server can display the front end, but sharing, private uploa
 | Vercel Blob authentication | Private Blob operations | Vercel project connection / deployment environment |
 | `CRON_SECRET` | Protecting scheduled expiry cleanup | Generate a long random secret and add it in Vercel |
 | `YOUTUBE_API_KEY` | Searching songs on YouTube | Google Cloud API key for YouTube Data API v3 |
-| `GOOGLE_CLIENT_ID` | Starting Google sign-in | Google OAuth Web application client |
-| `GOOGLE_CLIENT_SECRET` | Completing Google sign-in on the server | Google OAuth Web application client; keep private |
-| `SESSION_SECRET` | Signing account sessions | A separate long random secret; keep private |
-| `SENDGRID_API_KEY` | Sending sign-up, password setup, and reset codes | SendGrid API key with Mail Send permission; keep private |
-| `AUTH_FROM_EMAIL` | Sender address for verification emails | The exact email address verified as a SendGrid Single Sender, e.g. `you@example.com` |
-| `RESEND_API_KEY` | Optional legacy email sending fallback | Resend API key; used only if `SENDGRID_API_KEY` is not set |
+| `FIREBASE_API_KEY` | Firebase web sign-in and provider lookup | Firebase project Web app configuration |
+| `FIREBASE_AUTH_DOMAIN` | Firebase Auth redirects | Firebase project Web app configuration |
+| `FIREBASE_PROJECT_ID` | Verify Firebase ID tokens | Firebase project Web app configuration |
+| `FIREBASE_APP_ID` | Initialize Firebase in the browser | Firebase project Web app configuration |
+| `SESSION_SECRET` | Signing Wishvilo account sessions | A separate long random value; keep private |
 
 ## ⏳ Expiry and upload limits
 
@@ -179,7 +179,7 @@ wishvilo/
 ├── api/
 │   ├── cleanup.js        # Scheduled deletion of expired private files
 │   ├── account.js        # Private profile, links, and saved comments
-│   ├── auth/             # Google OAuth, email/password flows, status, and sign-out
+│   ├── auth/             # Firebase config/session, auth status, and sign-out
 │   ├── comments.js       # Read and post recipient comments
 │   ├── create-gift.js    # Save a finished birthday page and return its link
 │   ├── gift.js           # Serve a birthday page while its link is valid
@@ -195,7 +195,9 @@ wishvilo/
 │   └── index.html        # Mirrored page copy
 ├── lib/
 │   ├── auth-utils.js     # Shared signed-session and account helpers
-│   └── password-auth.js  # Password hashing, private credential records, and email codes
+│   ├── firebase-token.js # Verify Firebase ID tokens on the server
+│   └── password-auth.js  # Legacy password-account compatibility
+├── firebase-auth.js      # Firebase sign-in, verification, and password flows
 ├── index.html            # Creator, preview, and recipient experience
 ├── LICENSE
 ├── package.json
