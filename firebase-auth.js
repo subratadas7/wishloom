@@ -57,10 +57,17 @@ export async function finishRedirect() {
 }
 
 export async function register({ name, email, password }) {
-  const { auth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } = await firebase();
+  const { auth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut } = await firebase();
   const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
-  await updateProfile(credential.user, { displayName: name.trim() });
-  await sendEmailVerification(credential.user, { url: actionUrl(), handleCodeInApp: false });
+  try {
+    await updateProfile(credential.user, { displayName: name.trim() });
+    await sendEmailVerification(credential.user, { url: actionUrl(), handleCodeInApp: false });
+  } catch (error) {
+    // The account may already have been created even when mail delivery fails.
+    // Sign out so the user can return to login and request a fresh link.
+    await signOut(auth).catch(() => {});
+    throw error;
+  }
   return credential.user.email;
 }
 
@@ -83,9 +90,15 @@ export async function login({ email, password }) {
   const { auth, signInWithEmailAndPassword, sendEmailVerification, signOut } = await firebase();
   const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
   if (!credential.user.emailVerified) {
-    await sendEmailVerification(credential.user, { url: actionUrl(), handleCodeInApp: false }).catch(() => {});
+    let resendError;
+    try {
+      await sendEmailVerification(credential.user, { url: actionUrl(), handleCodeInApp: false });
+    } catch (error) {
+      resendError = error;
+    }
     await signOut(auth);
-    throw new Error('Verify your email using the link we sent, then log in. A fresh link was sent if possible.');
+    if (resendError) throw resendError;
+    throw new Error('This email is registered but not verified yet. A fresh verification link was sent. Check your inbox and spam folder, open it, then log in again.');
   }
   await notify();
   location.href = '/?account=1';
