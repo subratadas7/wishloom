@@ -206,7 +206,7 @@ function confetti(count){const colors=['#f66e91','#ffb769','#9d8ade','#71c9a9','
   let firebaseApi;
   const api=()=>firebaseApi||(firebaseApi=import('/firebase-auth.js'));
   function panel(id){['emailLoginForm','createAccountForm','verifyAccountForm','forgotAccountForm'].forEach(key=>{const item=byId(key);if(item)item.hidden=key!==id});if(status)status.textContent=''}
-  function showError(error){if(!status)return;status.textContent=error?.code==='auth/unauthorized-continue-uri'?'Firebase blocked this site’s verification link. In Firebase Console, open Authentication → Settings → Authorized domains and add wishvilo-me.vercel.app (hostname only), then try again.':error?.code==='auth/too-many-requests'?'Firebase temporarily paused requests. Wait a little while, then try again.':error?.message||'Could not complete that request.'}
+  function showError(error){if(!status)return;status.textContent=error?.code==='auth/unauthorized-continue-uri'?`Firebase blocked this site’s verification link. In Firebase Console, open Authentication → Settings → Authorized domains and add ${location.hostname} (hostname only), then try again.`:error?.code==='auth/too-many-requests'?'Firebase temporarily paused requests. Wait a little while, then try again.':error?.message||'Could not complete that request.'}
   byId('showCreate')?.addEventListener('click',()=>panel('createAccountForm'));
   byId('showForgot')?.addEventListener('click',()=>{byId('forgotEmail').value=byId('loginEmail').value;panel('forgotAccountForm')});
   document.querySelectorAll('[data-auth-back]').forEach(button=>button.addEventListener('click',()=>panel('emailLoginForm')));
