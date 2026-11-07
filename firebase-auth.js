@@ -34,17 +34,24 @@ function actionUrl() { return `${location.origin}/?authAction=complete`; }
 
 export async function signInGoogle() {
   const { auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await firebase();
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
   try {
-    await signInWithPopup(auth, new GoogleAuthProvider());
+    const result = await signInWithPopup(auth, provider);
+    if (result?.user) {
+      await notify();
+      location.href = '/?account=1';
+    }
   } catch (error) {
-    if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(error.code)) {
-      await signInWithRedirect(auth, new GoogleAuthProvider());
+    if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment', 'auth/cancelled-popup-request'].includes(error.code)) {
+      await signInWithRedirect(auth, provider);
       return;
+    }
+    if (error.code === 'auth/popup-closed-by-user') {
+      throw new Error('Google sign-in popup was closed before completion. Please try again.');
     }
     throw error;
   }
-  await notify();
-  location.href = '/?account=1';
 }
 
 export async function finishRedirect() {
